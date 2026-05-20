@@ -1,0 +1,739 @@
+/*
+     The Overall visual design, component styling (navbar, dashboard cards, calculator overlay, auth cards, etc.), 
+    and many patterns below were developed, adapted and understand by me. I watched and learned CSS lectures from youtube.
+    With the help of cs50's and extra knowledge that I acquired help me to build this.
+/*
+
+
+/* ===== Global reset and typography ===== */
+*,
+*::before,
+*::after {
+    box-sizing: border-box; /* include border/padding in width/height */
+}
+
+body {
+    margin: 0; /* remove default margin */
+    font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; /* modern font */
+    background-color: #020617; /* deep dark background */
+    color: #e5e7eb; /* light gray text */
+}
+
+/* Root layout */
+.app-root {
+    min-height: 100vh; /* full window height */
+    display: flex;
+    flex-direction: column;
+    background: radial-gradient(circle at top left, #1e293b 0, #020617 55%); /* subtle gradient */
+}
+
+/* ===== Navbar ===== */
+.navbar {
+    position: sticky; /* stays at top when scrolling */
+    top: 0;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.75rem 1.5rem;
+    background: rgba(15, 23, 42, 0.92); /* dark glass */
+    backdrop-filter: blur(16px); /* blur background content */
+    border-bottom: 1px solid #1f2937; /* subtle bottom line */
+}
+
+.navbar-left {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+}
+
+.logo-circle {
+    width: 26px;
+    height: 26px;
+    border-radius: 999px;
+    background: radial-gradient(circle at 30% 30%, #facc15, #f59e0b); /* gold gradient */
+    box-shadow: 0 0 14px rgba(250, 204, 21, 0.7); /* glow effect */
+}
+
+.logo-text {
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-size: 0.95rem;
+    color: #f9fafb;
+}
+
+.navbar-center {
+    display: flex;
+    gap: 0.9rem;
+}
+
+.nav-link {
+    color: #9ca3af;
+    text-decoration: none;
+    font-size: 0.9rem;
+    padding: 0.25rem 0.8rem;
+    border-radius: 999px;
+    transition: color 0.15s ease, background-color 0.15s ease;
+}
+
+.nav-link:hover {
+    color: #e5e7eb;
+    background-color: rgba(55, 65, 81, 0.7);
+}
+
+.nav-link.active {
+    color: #e5e7eb;
+    background: linear-gradient(to right, #3b82f6, #22c55e); /* blue to green pill */
+}
+
+/* Right side icons */
+.navbar-right {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.icon-button {
+    background: #111827;
+    border-radius: 999px;
+    border: 1px solid #1f2937;
+    color: #e5e7eb;
+    padding: 0.4rem 0.7rem;
+    cursor: pointer;
+    font-size: 0.95rem;
+    transition: background-color 0.15s ease, transform 0.1s ease, box-shadow 0.15s ease;
+}
+
+.icon-button:hover {
+    background: #1f2937;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.6);
+}
+
+.avatar-circle {
+    width: 28px;
+    height: 28px;
+    border-radius: 999px;
+    background: linear-gradient(to bottom right, #3b82f6, #22c55e); /* blue-green gradient */
+}
+
+/* ===== Main content ===== */
+.main-content {
+    flex: 1; /* take remaining height */
+    padding: 1.5rem;
+    max-width: 1120px;
+    width: 100%;
+    margin: 0 auto; /* center horizontally */
+}
+
+/* ===== Footer ===== */
+.footer {
+    padding: 0.75rem 1.5rem;
+    border-top: 1px solid #1f2937;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    color: #6b7280;
+    font-size: 0.85rem;
+    background-color: #020617;
+}
+
+.footer-links {
+    display: flex;
+    gap: 1rem;
+}
+
+.footer-link {
+    color: #6b7280;
+    text-decoration: none;
+    font-size: 0.85rem;
+}
+
+.footer-link:hover {
+    color: #e5e7eb;
+}
+
+/* ===== Dashboard layout ===== */
+.dashboard {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem; /* space between cards */
+}
+
+/* Big balance card */
+.balance-card {
+    background: radial-gradient(circle at top left, #0f172a, #020617); /* nice gradient */
+    border-radius: 1rem;
+    padding: 1.5rem;
+    border: 1px solid #1f2937;
+    box-shadow: 0 18px 45px rgba(0, 0, 0, 0.65); /* strong depth */
+}
+
+.balance-label {
+    font-size: 0.95rem;
+    color: #9ca3af;
+    margin: 0;
+}
+
+.balance-value {
+    margin: 0.3rem 0;
+    font-size: 2.3rem;
+    font-weight: 600;
+    color: #e5e7eb;
+}
+
+.balance-sub {
+    margin: 0;
+    font-size: 0.9rem;
+    color: #9ca3af;
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+}
+
+.income-text {
+    color: #22c55e; /* green */
+}
+
+.expense-text {
+    color: #f97373; /* soft red */
+}
+
+.dot-separator {
+    color: #6b7280;
+}
+
+/* Stats row (3 small cards) */
+.stats-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); /* responsive grid */
+    gap: 0.9rem;
+}
+
+.stat-card {
+    background: #020617;
+    border-radius: 0.9rem;
+    padding: 1rem 1.1rem;
+    border: 1px solid #1f2937;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.55);
+}
+
+.stat-label {
+    margin: 0;
+    font-size: 0.85rem;
+    color: #9ca3af;
+}
+
+.stat-value {
+    margin: 0.35rem 0 0;
+    font-size: 1.4rem;
+    font-weight: 500;
+    color: #e5e7eb;
+}
+
+.stat-value.positive {
+    color: #22c55e;
+}
+
+.stat-value.negative {
+    color: #f97373;
+}
+
+/* Generic card (for Recent Transactions) */
+.card {
+    background: #020617;
+    border-radius: 1rem;
+    border: 1px solid #1f2937;
+    padding: 1.2rem 1.3rem;
+    box-shadow: 0 12px 35px rgba(0, 0, 0, 0.6);
+}
+
+.card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.75rem;
+}
+
+.card-title {
+    margin: 0;
+    font-size: 1rem;
+    color: #e5e7eb;
+}
+
+.card-body {
+    font-size: 0.9rem;
+    color: #9ca3af;
+}
+
+.quick-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+.secondary-button-small,
+.primary-button-small {
+    padding: 0.35rem 0.8rem;
+    font-size: 0.8rem;
+}
+
+/* Primary action button */
+.primary-button {
+    background: linear-gradient(to right, #3b82f6, #22c55e); /* blue-green */
+    color: #f9fafb;
+    border: none;
+    border-radius: 999px;
+    padding: 0.45rem 1.1rem;
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    box-shadow: 0 12px 30px rgba(37, 99, 235, 0.45);
+    transition: transform 0.1s ease, box-shadow 0.15s ease, opacity 0.15s ease;
+}
+
+.primary-button:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 16px 40px rgba(37, 99, 235, 0.6);
+    opacity: 0.96;
+}
+
+/* ===== Responsive tweaks ===== */
+@media (max-width: 768px) {
+    .navbar-center {
+        display: none; /* hide center nav on mobile for simplicity */
+    }
+
+    .main-content {
+        padding: 1rem;
+    }
+
+    .balance-card {
+        padding: 1.25rem;
+    }
+}
+
+/* ===== Auth pages (login / register) ===== */
+.auth-page {
+    min-height: calc(100vh - 120px); /* minus navbar+footer */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.auth-card {
+    width: 100%;
+    max-width: 420px;
+    background: #020617;
+    border-radius: 1rem;
+    border: 1px solid #1f2937;
+    padding: 1.75rem 1.8rem;
+    box-shadow: 0 18px 45px rgba(0, 0, 0, 0.7);
+}
+
+.auth-title {
+    margin: 0 0 0.4rem;
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #f9fafb;
+}
+
+.auth-subtitle {
+    margin: 0 0 1.3rem;
+    font-size: 0.9rem;
+    color: #9ca3af;
+}
+
+.auth-form {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.field-label {
+    font-size: 0.85rem;
+    color: #9ca3af;
+}
+
+.text-input {
+    width: 100%;
+    padding: 0.55rem 0.7rem;
+    border-radius: 0.6rem;
+    border: 1px solid #1f2937;
+    background-color: #020617;
+    color: #e5e7eb;
+    font-size: 0.9rem;
+}
+
+.text-input:focus {
+    outline: none;
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 1px #3b82f6;
+}
+
+.auth-button {
+    width: 100%;
+    margin-top: 0.4rem;
+}
+
+.auth-footer-text {
+    margin: 0.75rem 0 0;
+    font-size: 0.85rem;
+    color: #9ca3af;
+}
+
+.link-text {
+    color: #3b82f6;
+    text-decoration: none;
+}
+
+.link-text:hover {
+    text-decoration: underline;
+}
+
+/* Flash messages */
+.flash-area {
+    margin-bottom: 0.75rem;
+}
+
+.flash {
+    padding: 0.55rem 0.8rem;
+    border-radius: 0.6rem;
+    font-size: 0.85rem;
+    margin-bottom: 0.4rem;
+    opacity: 1;
+    transition: opacity 0.3s ease;
+}
+
+.flash-success {
+    background-color: rgba(16, 185, 129, 0.15);
+    border: 1px solid #10b981;
+    color: #a7f3d0;
+}
+
+.flash-error {
+    background-color: rgba(239, 68, 68, 0.15);
+    border: 1px solid #ef4444;
+    color: #fecaca;
+}
+
+.flash-info {
+    background-color: rgba(59, 130, 246, 0.15);
+    border: 1px solid #3b82f6;
+    color: #bfdbfe;
+}
+
+.nav-username {
+    margin: 0 0.75rem;
+    font-size: 0.9rem;
+    color: #e5e7eb;
+}
+
+.secondary-button {
+    background: transparent;
+    border: 1px solid #4b5563;
+    color: #e5e7eb;
+    border-radius: 999px;
+    padding: 0.35rem 0.9rem;
+    font-size: 0.8rem;
+    cursor: pointer;
+}
+
+.secondary-button.small {
+    padding: 0.25rem 0.6rem;
+    font-size: 0.75rem;
+}
+
+.secondary-button:hover {
+    background: #111827;
+}
+
+.inline-form {
+    display: inline-block;
+    margin-right: 0.75rem;
+}
+
+.small-select {
+    padding: 0.3rem 0.7rem;
+    font-size: 0.8rem;
+    height: 32px;
+}
+
+/* --- Calculator overlay & panel --- */
+#calculator-overlay {
+    position: fixed;
+    inset: 0; /* top/right/bottom/left: 0 */
+    background: rgba(15, 23, 42, 0.75); /* semi-transparent dark */
+    display: none; /* hidden by default */
+    align-items: center;
+    justify-content: center;
+    z-index: 999; /* above main UI */
+}
+
+#calculator-panel {
+    background: #020617; /* very dark panel */
+    border-radius: 1rem;
+    border: 1px solid rgba(148, 163, 184, 0.4); /* subtle border */
+    width: 320px;
+    max-width: 90vw;
+    padding: 1rem 1.2rem 1.2rem;
+    box-shadow: 0 20px 40px rgba(15, 23, 42, 0.8);
+    color: #e5e7eb;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Inter", sans-serif;
+}
+
+/* header */
+.calc-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.75rem;
+}
+
+.calc-title {
+    font-size: 0.9rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #9ca3af;
+}
+
+.calc-close-btn {
+    background: transparent;
+    border: none;
+    color: #9ca3af;
+    font-size: 1rem;
+    cursor: pointer;
+    padding: 0.15rem 0.4rem;
+    border-radius: 999px;
+}
+
+.calc-close-btn:hover {
+    background: rgba(148, 163, 184, 0.15);
+    color: #e5e7eb;
+}
+
+/* display */
+.calc-display {
+    width: 100%;
+    background: #020617;
+    border: 1px solid rgba(148, 163, 184, 0.5);
+    border-radius: 0.75rem;
+    padding: 0.6rem 0.75rem;
+    font-size: 1.1rem;
+    color: #e5e7eb;
+    text-align: right;
+    margin-bottom: 0.8rem;
+    outline: none;
+}
+
+/* grid */
+.calc-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0.4rem;
+}
+
+/* buttons */
+.calc-btn {
+    background: #020617;
+    border: 1px solid rgba(30, 64, 175, 0.6); /* blue border */
+    color: #e5e7eb;
+    border-radius: 0.6rem;
+    padding: 0.45rem 0;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: background 0.15s ease, transform 0.05s ease, box-shadow 0.15s ease;
+}
+
+.calc-btn:hover {
+    background: rgba(37, 99, 235, 0.25);
+    box-shadow: 0 0 0 1px rgba(37, 99, 235, 0.3);
+}
+
+.calc-btn:active {
+    transform: translateY(1px);
+}
+
+/* operator buttons */
+.calc-op {
+    background: rgba(15, 23, 42, 0.9);
+    border-color: rgba(251, 191, 36, 0.6); /* gold border */
+    color: #facc15;
+}
+
+/* equal button spans full row */
+.calc-equal {
+    grid-column: 1 / -1; /* full width */
+    background: linear-gradient(135deg, #2563eb, #f59e0b);
+    border-color: transparent;
+    color: #0b1120;
+    font-weight: 600;
+}
+
+/* small icon button example (navbar) */
+.icon-button {
+    background: transparent;
+    border: none;
+    color: #e5e7eb;
+    cursor: pointer;
+    padding: 0.25rem 0.4rem;
+    border-radius: 999px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+}
+
+.icon-button:hover {
+    background: rgba(148, 163, 184, 0.15);
+}
+
+/* Transactions table */
+.txn-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 0.5rem;
+    font-size: 0.9rem;
+    color: #e5e7eb;
+}
+
+.txn-table th,
+.txn-table td {
+    padding: 0.5rem 0.4rem;
+    border-bottom: 1px solid #1f2937;
+}
+
+.txn-table th {
+    text-align: left;
+    font-size: 0.8rem;
+    color: #9ca3af;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+}
+
+.txn-table .text-right {
+    text-align: right;
+}
+
+.primary-button-small {
+    padding: 0.25rem 0.7rem;
+    font-size: 0.75rem;
+    box-shadow: 0 8px 20px rgba(37, 99, 235, 0.45);
+}
+
+.filters-row {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem; /* space between filters */
+}
+
+.filters-form {
+    display: flex;
+    gap: 0.5rem; /* period + category next to each other */
+}
+
+/* buttons at bottom center of card */
+.card-footer-actions {
+    margin-top: 0.9rem;
+    display: flex;
+    justify-content: center; /* center horizontally */
+    gap: 0.75rem;
+}
+
+.table td,
+.table th {
+    padding: 0.6rem 0.75rem;  /* more vertical + horizontal space */
+}
+
+.table td:nth-child(1) {
+    width: 60%;
+}
+.table td:nth-child(2) {
+    width: 40%;
+}
+
+.dashboard .card + .card {
+    margin-top: 1.8rem;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  text-decoration: none;
+}
+
+.brand-logo{
+    width: 32px;
+    height: 32px;
+    object-fit: contain;
+}
+
+.brand-text {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.1;
+}
+
+.brand-name {
+  font-family: 'Montserrat', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  font-weight: 700;
+  font-size: 1.4rem;
+  letter-spacing: 0.05em;
+  color: #f9fafb;
+}
+
+.brand-tagline {
+  font-family: 'Dancing Script', system-ui, -apple-system, BlinkMacSystemFont, cursive;
+  font-size: 0.85rem;
+  color: #e5e7eb;
+}
+
+.budgets-table {
+    width: 100%;
+    table-layout: fixed;           /* equal width columns */
+    border-collapse: separate;
+    border-spacing: 0;
+    margin-bottom: 0;
+}
+
+.budgets-table th,
+.budgets-table td {
+    padding: 0.75rem 0.75rem;
+    vertical-align: middle;        /* keeps all rows centered vertically */
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.budgets-table thead th {
+    font-size: 0.9rem;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    opacity: 0.75;
+}
+
+/* Category = left */
+.budgets-table th:first-child,
+.budgets-table td:first-child {
+    text-align: left;
+    padding-left: 1.25rem;         /* a bit more space before Category */
+}
+
+/* Budget & Used = center */
+.budgets-table th:nth-child(2),
+.budgets-table th:nth-child(3),
+.budgets-table td:nth-child(2),
+.budgets-table td:nth-child(3) {
+    text-align: center;
+}
+
+/* Remaining = right */
+.budgets-table th:last-child,
+.budgets-table td:last-child {
+    text-align: right;
+    padding-right: 1.25rem;        /* more space for the last column */
+}
+
+

@@ -1,0 +1,99 @@
+{% extends "base.html" %}
+
+{% block title %}Credo · Budgets{% endblock %}
+
+{% block content %}
+<div class="dashboard">
+    <!-- Intro -->
+    <section class="card">
+        <div class="card-header">
+            <h2 class="card-title">Budgets</h2>
+        </div>
+        <div class="card-body">
+            <p class="muted-text">
+                Set monthly spending limits per category and see how much you have used this month.
+            </p>
+        </div>
+    </section>
+
+    <!-- Add / update budget -->
+    <section class="card" style="margin-top: 1.5rem;">
+        <div class="card-header">
+            <h2 class="card-title">Add or Update Budget</h2>
+        </div>
+        <div class="card-body">
+            <form method="POST" action="{{ url_for('budgets_page') }}" class="inline-form">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+                <div>
+                    <label for="category" class="form-label">Category</label>
+                    <select id="category" name="category" class="text-input" required>
+                        {% for cat in categories %}
+                            <option value="{{ cat.name }}">{{ cat.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div>
+                    <label for="limit_amount" class="form-label">Monthly Budget (₹)</label>
+                    <input type="number"
+                        id="limit_amount"
+                        name="limit_amount"
+                        class="text-input"
+                        step="0.01"
+                        min="0"
+                        placeholder="5000"
+                        required>
+                </div>
+
+                <button type="submit" class="primary-button">
+                    💾 Save Budget
+                </button>
+            </form>
+
+        </div>
+    </section>
+
+    <!-- Budgets list -->
+    <section class="card" style="margin-top: 1.5rem;">
+        <div class="card-header">
+            <h2 class="card-title">This Month · By Category</h2>
+        </div>
+        <div class="card-body">
+            {% if budget_rows %}
+                <table class="table budgets-table">
+                    <thead>
+                        <tr>
+                            <th class="text-start">📂 Category</th>
+                            <th class="text-center">🎯 Budget (₹)</th>
+                            <th class="text-center">📉 Used this month (₹)</th>
+                            <th class="text-end">✅ Remaining / Over (₹)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {% for row in budget_rows %}
+                        <tr>
+                            <td class="text-start">{{ row.category }}</td>
+                            <td class="text-center">{{ "%.2f"|format(row.limit_amount) }}</td>
+                            <td class="text-center">{{ "%.2f"|format(row.used_amount) }}</td>
+                            <td class="text-end {% if row.remaining < 0 %}negative{% else %}positive{% endif %}">
+                                {% if row.remaining < 0 %}
+                                -{{ "%.2f"|format(-row.remaining) }}
+                                {% else %}
+                                {{ "%.2f"|format(row.remaining) }}
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+
+            {% else %}
+                <p class="muted-text">
+                    No budgets yet. Add your first budget using the form above.
+                </p>
+            {% endif %}
+        </div>
+    </section>
+</div>
+{% endblock %}

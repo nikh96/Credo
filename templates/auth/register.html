@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block title %}Credo · Register{% endblock %}
+
+{% block content %}
+<div class="auth-page">
+    <div class="auth-card">
+        <h1 class="auth-title">Create your Credo</h1>
+        <p class="auth-subtitle">Set up your secure personal finance vault.</p>
+
+        <form class="auth-form" method="POST" action="{{ url_for('register') }}">
+    <label class="field-label" for="reg-name">Full name</label>
+    <input id="reg-name" name="name" type="text" class="text-input" placeholder="Your name">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+    <label class="field-label" for="reg-email">Email</label>
+    <input id="reg-email" name="email" type="email" class="text-input" placeholder="you@example.com">
+
+    <label class="field-label" for="reg-password">Password</label>
+    <input id="reg-password" name="password" type="password" class="text-input" placeholder="Create a password">
+
+    <button type="submit" class="primary-button auth-button">Sign up</button>
+
+    <p class="auth-footer-text">
+        Already have an account?
+        <a href="{{ url_for('login') }}" class="link-text">Log in</a>
+    </p>
+</form>
+
+    </div>
+</div>
+{% endblock %}

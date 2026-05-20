@@ -1,0 +1,125 @@
+{% extends "base.html" %}
+
+{% block title %}Credo · Reports{% endblock %}
+
+{% block content %}
+<div class="dashboard">
+    <!-- Summary cards -->
+    <section class="stats-row">
+        <div class="stat-card">
+            <p class="stat-label">This Month · Income</p>
+            <p class="stat-value positive">
+                ₹ {{ "%.2f"|format(month_income) }}
+            </p>
+        </div>
+        <div class="stat-card">
+            <p class="stat-label">This Month · Expenses</p>
+            <p class="stat-value negative">
+                ₹ {{ "%.2f"|format(-month_expense) }}
+            </p>
+        </div>
+        <div class="stat-card">
+            <p class="stat-label">This Month · Net</p>
+            <p class="stat-value {% if month_net >= 0 %}positive{% else %}negative{% endif %}">
+                ₹ {{ "%.2f"|format(month_net) }}
+            </p>
+        </div>
+    </section>
+
+    <section class="stats-row" style="margin-top: 1rem;">
+        <div class="stat-card">
+            <p class="stat-label">This Year · Income</p>
+            <p class="stat-value positive">
+                ₹ {{ "%.2f"|format(year_income) }}
+            </p>
+        </div>
+        <div class="stat-card">
+            <p class="stat-label">This Year · Expenses</p>
+            <p class="stat-value negative">
+                ₹ {{ "%.2f"|format(-year_expense) }}
+            </p>
+        </div>
+        <div class="stat-card">
+            <p class="stat-label">This Year · Net</p>
+            <p class="stat-value {% if year_net >= 0 %}positive{% else %}negative{% endif %}">
+                ₹ {{ "%.2f"|format(year_net) }}
+            </p>
+        </div>
+    </section>
+
+    {% if month_income == 0 and month_expense == 0 and year_income == 0 and year_expense == 0 %}
+        <p class="muted-text" style="margin-top: 1rem;">
+            No data yet. Add some income and expense transactions to see your monthly chart and summaries.
+        </p>
+    {% endif %}
+
+    <!-- Chart section -->
+    <section class="card" style="margin-top: 1.8rem;">
+        <div class="card-header">
+            <h2 class="card-title">Monthly Overview ({{ year }})</h2>
+        </div>
+        <div class="card-body">
+            <canvas id="monthlyChart" style="max-height: 350px;"></canvas>
+        </div>
+    </section>
+</div>
+
+<!-- Chart.js library (from CDN) -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+    // Parse chart data from backend
+    const chartDataStr = '{{ chart_data | safe }}';
+    const chartData = JSON.parse(chartDataStr);
+
+    const labels = chartData.map(d => d.month);
+    const incomeValues = chartData.map(d => d.income);
+    const expenseValues = chartData.map(d => d.expense);
+
+    const ctx = document.getElementById('monthlyChart').getContext('2d');
+    const chart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: labels,
+            datasets: [
+                {
+                    label: 'Income',
+                    data: incomeValues,
+                    backgroundColor: '#10b981',
+                    borderRadius: 4,
+                },
+                {
+                    label: 'Expenses',
+                    data: expenseValues,
+                    backgroundColor: '#ef4444',
+                    borderRadius: 4,
+                },
+            ],
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: true,
+            plugins: {
+                legend: {
+                    position: 'top',
+                    labels: {
+                        color: '#e5e7eb',
+                        font: { size: 12 },
+                    },
+                },
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: { color: '#9ca3af' },
+                    grid: { color: '#1f2937' },
+                },
+                x: {
+                    ticks: { color: '#9ca3af' },
+                    grid: { color: '#1f2937' },
+                },
+            },
+        },
+    });
+</script>
+{% endblock %}

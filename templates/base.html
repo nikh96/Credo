@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"><!-- character encoding -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"><!-- responsive -->
+    <title>{% block title %}Credo{% endblock %}</title><!-- default title -->
+
+    <!-- Google Font: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com"><!-- font performance -->
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><!-- font performance -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"><!-- main font -->
+
+    <!-- Main CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}"><!-- dark theme styles -->
+</head>
+<body>
+    <!-- Root wrapper for whole app -->
+    <div class="app-root">
+        <!-- Top navigation bar -->
+        
+        {#
+            I designed the overall base layout (navbar, footer, and content blocks)
+            myself. Some of the specific navigation structure and active-link logic
+            below were refined with suggestions from an AI assistant (Perplexity),
+            then reviewed and integrated by me.
+        #}
+       
+        <header class="navbar">
+            <a href="{{ url_for('home') }}" class="brand">
+                <img src="{{ url_for('static', filename='img/Credo-logo.png') }}"
+                     alt="Credo logo"
+                     class="brand-logo">
+                <div class="brand-text">
+                    <span class="brand-name">Credo</span>
+                    <span class="brand-tagline">See where your money goes</span>
+                </div>
+            </a>
+
+
+            <nav class="navbar-center">
+                <a href="{{ url_for('home') }}"
+                    class="nav-link {% if request.path == url_for('home') %}active{% endif %}">
+                     📊 Dashboard
+                </a>
+
+                <a href="{{ url_for('transactions_page') }}"
+                    class="nav-link {% if request.path.startswith(url_for('transactions_page')) %}active{% endif %}">
+                     💸 Transactions
+                </a>
+
+                <a href="{{ url_for('reports_page') }}"
+                    class="nav-link {% if request.path.startswith(url_for('reports_page')) %}active{% endif %}">
+                     📈 Reports
+                </a>
+
+                <a href="{{ url_for('budgets_page') }}"
+                    class="nav-link {% if request.path.startswith(url_for('budgets_page')) %}active{% endif %}">
+                     💼 Budgets
+                </a>
+            </nav>
+
+            <div class="navbar-right">
+                <!-- Calculator icon button -->
+                <button class="icon-button" id="open-calculator-btn" title="Calculator">🧮</button>
+
+                {% if session.get('user_id') %}
+                    <span class="nav-username">Hi, {{ session.get('user_name') }}</span>
+                    <a href="{{ url_for('logout') }}" class="nav-link">Logout</a>
+                {% else %}
+                    <a href="{{ url_for('login') }}" class="nav-link">Login</a>
+                {% endif %}
+            </div>
+        </header>
+
+        <!-- Main content injected by child templates -->
+        <main class="main-content">
+            {% with messages = get_flashed_messages(with_categories=True) %}
+                {% if messages %}
+                    <div class="flash-area">
+                        {% for category, message in messages %}
+                            <div class="flash flash-{{ category }}">{{ message }}</div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            {% endwith %}
+
+            {% block content %}
+            <!-- child templates put their page content here -->
+            {% endblock %}
+        </main>
+
+        <!-- Footer at bottom -->
+        <footer class="footer">
+            <span>© 2025 Credo. All rights reserved.</span>
+            <div class="footer-links">
+                <a href="{{ url_for('about_page') }}" class="footer-link">About</a>
+                <a href="{{ url_for('help_page') }}" class="footer-link">Help</a>
+                <a href="{{ url_for('privacy_page') }}" class="footer-link">Privacy</a>
+                <a href="{{ url_for('terms_page') }}" class="footer-link">Terms</a>
+            </div>
+        </footer>
+
+    </div>
+
+    <!-- Main JS -->
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+
+    {#
+        I decided to include this calculator overlay in the base layout myself.
+        The specific HTML structure and button grid for this calculator were
+        refined with help from an AI assistant (Perplexity), then adapted and
+        understood by me.
+    #}
+
+    <!-- Calculator panel (hidden by default) -->
+    <div id="calculator-overlay">
+        <div id="calculator-panel">
+            <div class="calc-header">
+                <span class="calc-title">Calculator</span>
+                <button class="calc-close-btn" id="close-calculator-btn">✕</button>
+            </div>
+
+            <input type="text" id="calc-display" class="calc-display" readonly />
+
+            <div class="calc-grid">
+                <button class="calc-btn" data-value="7">7</button>
+                <button class="calc-btn" data-value="8">8</button>
+                <button class="calc-btn" data-value="9">9</button>
+                <button class="calc-btn calc-op" data-value="/">÷</button>
+
+                <button class="calc-btn" data-value="4">4</button>
+                <button class="calc-btn" data-value="5">5</button>
+                <button class="calc-btn" data-value="6">6</button>
+                <button class="calc-btn calc-op" data-value="*">×</button>
+
+                <button class="calc-btn" data-value="1">1</button>
+                <button class="calc-btn" data-value="2">2</button>
+                <button class="calc-btn" data-value="3">3</button>
+                <button class="calc-btn calc-op" data-value="-">−</button>
+
+                <button class="calc-btn" data-value="0">0</button>
+                <button class="calc-btn" data-value=".">.</button>
+                <button class="calc-btn calc-op" data-action="clear">C</button>
+                <button class="calc-btn calc-op" data-value="+">+</button>
+
+                <button class="calc-btn calc-equal" data-action="equal">=</button>
+            </div>
+        </div>
+    </div>
+
+    {#
+        I wired up flash messages with Flask myself. The idea and specific
+        JavaScript pattern to auto-fade and hide them after a short delay
+        were refined with suggestions from an AI assistant (Perplexity),
+        then reviewed and integrated by me.
+    #}
+
+    <!-- Auto-hide flash messages -->
+    <script>
+      // auto-hide flash messages after 1 second
+      setTimeout(function () {
+        document.querySelectorAll('.flash').forEach(function (el) {
+          el.style.opacity = '0';
+          el.style.transition = 'opacity 0.3s ease';
+          setTimeout(function () {
+            el.style.display = 'none';
+          }, 300);
+        });
+      }, 1000);
+    </script>
+</body>
+</html>

@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block title %}Credo · Help{% endblock %}
+
+{% block content %}
+<div class="dashboard">
+  <section class="card" style="max-width: 720px; margin: 2rem auto;">
+    <div class="card-header">
+      <h2 class="card-title">Help & FAQs</h2>
+    </div>
+    <div class="card-body">
+      <h3 class="card-subtitle">How do I add a transaction?</h3>
+      <p class="muted-text">
+        Go to Transactions → Add Transaction, fill in date, description, category and
+        amount (positive for income, negative for expense), then save.
+      </p>
+
+      <h3 class="card-subtitle" style="margin-top: 1rem;">How do budgets work?</h3>
+      <p class="muted-text">
+        On the Budgets page, set a monthly limit per category. Credo compares that limit
+        with expenses in the same category for the current month.
+      </p>
+
+      <h3 class="card-subtitle" style="margin-top: 1rem;">I forgot my password</h3>
+      <p class="muted-text">
+        On the login page, use “Forgot your password?” and follow the reset link shown in
+        the server console.
+      </p>
+    </div>
+  </section>
+</div>
+{% endblock %}

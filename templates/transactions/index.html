@@ -1,0 +1,110 @@
+{% extends "base.html" %}
+
+{% block title %}Credo · Transactions{% endblock %}
+
+{% block content %}
+<div class="dashboard">
+    <!-- Main Transactions card -->
+    <section class="card">
+        <div class="card-header">
+            <h2 class="card-title">All Transactions</h2>
+
+            <div class="filters-row">
+                <!-- Period + Category filters side by side -->
+                <form method="GET" action="{{ url_for('transactions_page') }}" class="inline-form filters-form">
+                    <select name="period" class="text-input small-select" onchange="this.form.submit()">
+                        <option value="all" {% if period=='all' %}selected{% endif %}>All time</option>
+                        <option value="this_month" {% if period=='this_month' %}selected{% endif %}>This month</option>
+                        <option value="last_month" {% if period=='last_month' %}selected{% endif %}>Last month</option>
+                    </select>
+
+                    <select name="category" id="category" class="text-input small-select" onchange="this.form.submit()">
+                        <option value="all" {% if category_filter=='all' %}selected{% endif %}>All categories</option>
+                        {% for cat in categories %}
+                        <option value="{{ cat.id }}" {% if category_filter|string==cat.id|string %}selected{% endif %}>
+                            {{ cat.name }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </form>
+            </div>
+        </div>
+
+        <div class="card-body">
+            {% if transactions %}
+            <table class="txn-table">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Description</th>
+                        <th>Category</th>
+                        <th class="text-right">Amount</th>
+                        <th></th> <!-- Edit/Delete -->
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for t in transactions %}
+                    <tr>
+                        <td>{{ t.date }}</td>
+                        <td>{{ t.description }}</td>
+                        <td>
+                            {{ t.category.name if t.category else '-' }}
+                        </td>
+                        <td class="text-right">
+                            {{ "%.2f"|format(t.amount) }}
+                        </td>
+                        <td>
+                            <a href="{{ url_for('edit_transaction', txn_id=t.id) }}"
+                                class="primary-button primary-button-small" style="margin-right: 0.25rem;">
+                                Edit
+                            </a>
+                            <form method="POST" action="{{ url_for('delete_transaction', txn_id=t.id) }}"
+                                style="display:inline;"
+                                onsubmit="return confirm('Are you sure you want to delete this transaction? This cannot be undone.');">
+                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                <button type="submit" class="primary-button primary-button-small">
+                                    Delete
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+            <!-- Bottom centered actions -->
+            <div class="card-footer-actions">
+                <a href="{{ url_for('export_transactions_csv') }}" class="primary-button primary-button-small"
+                    style="text-decoration: none; display: inline-block; text-align: center;">
+                    ⬇ Download CSV
+                </a>
+
+                <a href="{{ url_for('export_json') }}" class="primary-button primary-button-small"
+                    style="text-decoration: none; display: inline-block; text-align: center;">
+                    📄 Export JSON
+                </a>
+
+                <a href="{{ url_for('export_monthly_summary') }}" class="primary-button primary-button-small"
+                    style="text-decoration: none; display: inline-block; text-align: center;">
+                    📊 Monthly Summary JSON
+                </a>
+
+                <a href="{{ url_for('add_transaction') }}" class="primary-button primary-button-small"
+                    style="text-decoration: none; display: inline-block; text-align: center;">
+                    ➕ Add Transaction
+                </a>
+            </div>
+            {% else %}
+            <p>No transactions yet. Add your first transaction using the button below.</p>
+
+            <div class="card-footer-actions">
+                <button type="button" class="primary-button primary-button-small"
+                    onclick="window.location.href='{{ url_for('add_transaction') }}'">
+                    Add Transaction
+                </button>
+            </div>
+            {% endif %}
+        </div>
+    </section>
+</div>
+{% endblock %}

@@ -1,0 +1,32 @@
+{% extends "base.html" %}<!-- use main layout -->
+
+{% block title %}Credo · Login{% endblock %}
+
+{% block content %}
+<div class="auth-page">
+    <div class="auth-card">
+        <h1 class="auth-title">Welcome back to Credo</h1>
+        <p class="auth-subtitle">Log in to access your personal safe.</p>
+
+        <form class="auth-form" method="POST" action="{{ url_for('login') }}">
+    <label class="field-label" for="login-email">Email</label>
+    <input id="login-email" name="email" type="email" class="text-input" placeholder="you@example.com">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    
+    <label class="field-label" for="login-password">Password</label>
+    <input id="login-password" name="password" type="password" class="text-input" placeholder="••••••••">
+
+    <button type="submit" class="primary-button auth-button">Log in</button>
+
+    <p class="auth-footer-text">
+        New to Credo?
+        <a href="{{ url_for('register') }}" class="link-text">Create an account</a>
+    </p>
+    <p class="muted-text" style="margin-top: 0.5rem;">
+        <a href="{{ url_for('forgot_password') }}" class="link-muted">Forgot your password?</a>
+    </p>
+</form>
+
+    </div>
+</div>
+{% endblock %}

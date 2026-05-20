@@ -1,0 +1,138 @@
+{#
+  I designed the overall structure and content of this dashboard myself
+  (greeting, quick actions, balance and stats cards, period filter, and
+  recent-transactions section). Some of the specific layout choices and
+  UX details (like the period dropdown behavior and empty-state CTA) were
+  refined with suggestions from an AI assistant (Perplexity), then reviewed
+  and integrated by me.
+#}
+
+{% extends "base.html" %}<!-- use main layout -->
+
+{% block title %}Credo · Dashboard{% endblock %}<!-- page title -->
+
+{% block content %}
+<div class="dashboard">
+    <!-- Top row: greeting + quick actions -->
+    <section class="card">
+        <div class="card-header">
+            <div>
+                <h2 class="card-title">Welcome back{% if session.user_name %}, {{ session.user_name }}{% endif %}</h2>
+                <p class="muted-text">Here is a quick overview of your Credo today.</p>
+            </div>
+
+            <!-- Quick actions -->
+            <div class="quick-actions">
+                <a href="{{ url_for('add_transaction') }}" class="primary-button primary-button-small">
+                    + Add Transaction
+                </a>
+                <a href="{{ url_for('transactions_page') }}" class="secondary-button secondary-button-small">
+                    View Transactions
+                </a>
+                <a href="{{ url_for('reports_page') }}" class="secondary-button secondary-button-small">
+                    View Reports
+                </a>
+                <a href="{{ url_for('budgets_page') }}" class="secondary-button secondary-button-small">
+                    Manage Budgets
+                </a>
+                <a href="{{ url_for('categories_page') }}" class="secondary-button secondary-button-small">
+                    Categories
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Balance + stats -->
+    <section class="stats-row">
+        <div class="balance-card">
+            <p class="balance-label">Current Balance</p>
+            <p class="balance-value {% if net >= 0 %}positive{% else %}negative{% endif %}">
+                ₹ {{ "%.2f"|format(net) }}
+            </p>
+            <p class="balance-sub">
+                Total income and expenses across your selected period.
+            </p>
+        </div>
+
+        <div class="stat-card">
+            <p class="stat-label">Total Income</p>
+            <p class="stat-value positive">
+                ₹ {{ "%.2f"|format(total_income) }}
+            </p>
+            <p class="stat-sub">All recorded income.</p>
+        </div>
+
+        <div class="stat-card">
+            <p class="stat-label">Total Expense</p>
+            <p class="stat-value negative">
+                ₹ {{ "%.2f"|format(-total_expense) }}
+            </p>
+            <p class="stat-sub">All recorded spending.</p>
+        </div>
+    </section>
+
+    <!-- Period filter under stats -->
+    <section style="margin-top: 1.25rem;">
+        <form method="GET"
+              action="{{ url_for('home') }}"
+              class="inline-form"
+              style="display: flex; gap: 0.75rem; align-items: center;">
+            <label for="period" class="form-label" style="margin: 0;">Show:</label>
+            <select name="period"
+                    id="period"
+                    class="text-input small-select"
+                    onchange="this.form.submit()">
+                <option value="this_month" {% if period == 'this_month' %}selected{% endif %}>This month</option>
+                <option value="last_month" {% if period == 'last_month' %}selected{% endif %}>Last month</option>
+                <option value="all" {% if period == 'all' %}selected{% endif %}>All time</option>
+            </select>
+        </form>
+    </section>
+
+    <!-- Recent transactions card -->
+    <section class="card" style="margin-top: 1.5rem;">
+        <div class="card-header">
+            <h2 class="card-title">Recent Transactions</h2>
+            <a href="{{ url_for('transactions_page') }}" class="secondary-button secondary-button-small">
+                View all
+            </a>
+        </div>
+
+        <div class="card-body">
+            {% if transactions %}
+                <table class="txn-table">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Description</th>
+                            <th>Category</th>
+                            <th class="text-right">Amount</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for t in transactions %}
+                        <tr>
+                            <td>{{ t.date }}</td>
+                            <td>{{ t.description }}</td>
+                            <td>{{ t.category.name if t.category else '-' }}</td>
+                            <td class="text-right">
+                                {{ "%.2f"|format(t.amount) }}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                <p class="muted-text">No transactions yet. Add your first income or expense to see them here.</p>
+                <div class="card-footer-actions">
+                    <button type="button"
+                            class="primary-button primary-button small"
+                            onclick="window.location.href='{{ url_for('add_transaction') }}'">
+                        Add your first Transaction
+                    </button>
+                </div>
+            {% endif %}
+        </div>
+    </section>
+</div>
+{% endblock %}
